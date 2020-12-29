@@ -52,10 +52,14 @@ public class ParkingServiceTest {
         }
     }
 
+    //arrange act assert
+
     @Test
     public void processExitingVehicleTest(){
         parkingService.processExitingVehicle();
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
     }
+
+
 
 }

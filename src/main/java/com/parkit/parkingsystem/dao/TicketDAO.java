@@ -1,3 +1,13 @@
+/*
+  Mov'it Group - Park'it app  OCR Project 5 initiative
+
+  Start the Interactive Shell with 3 option, parking entry, exit with ticket or shutdown
+
+  @previous_author undocumented
+ * @author  Sébastien Vigé
+ * @version 1.0
+ * @since   2020-12-28
+ */
 package com.parkit.parkingsystem.dao;
 
 import com.parkit.parkingsystem.config.DataBaseConfig;
@@ -5,9 +15,8 @@ import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,7 +24,7 @@ import java.sql.Timestamp;
 
 public class TicketDAO {
 
-    private static final Logger logger = LogManager.getLogger("TicketDAO");
+    private static final Logger logger = LoggerFactory.getLogger("TicketDAO");
 
     public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
