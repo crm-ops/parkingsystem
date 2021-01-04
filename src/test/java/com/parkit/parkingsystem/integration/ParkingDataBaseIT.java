@@ -97,8 +97,9 @@ public class ParkingDataBaseIT {
 
     //1 - test reports
     // testing parking service only - not to worry if coverage is not 100%
-    // joda time to impletment in th full class + test + ticket + factorise (at the end)
+
     //code coverage in intelliJ
 
+    // done - joda time to impletment in th full class + test + ticket + factorise (at the end)
 
 }

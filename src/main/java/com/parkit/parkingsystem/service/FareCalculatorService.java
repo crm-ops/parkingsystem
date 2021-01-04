@@ -16,16 +16,9 @@ public class FareCalculatorService {
         DateTime indatetime = new DateTime(ticket.getInTime());
         DateTime outdatetime = new DateTime(ticket.getOutTime());
 
-        //int inHour = ticket.getInTime().getHours();
-        //int outHour = ticket.getOutTime().getHours();
-
-        //TODO: Some tests are failing here. Need to check if this logic is correct
 
         Duration parkingduration = new Duration(indatetime,outdatetime);
-        //int duration = outHour - inHour;
-        // fixing the 45 mins stay unit test - the number of full hours is rounded to 0 due to the int format of duration
-        // switching to a duration calculated in minutes
-        // using jodatime standard duration feature
+
         int duration = (int)parkingduration.getStandardMinutes();
 
 

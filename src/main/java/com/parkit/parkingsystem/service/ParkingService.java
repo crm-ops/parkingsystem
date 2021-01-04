@@ -79,7 +79,8 @@ public class ParkingService {
         return parkingSpot;
     }
 
-    private ParkingType getVehichleType(){
+    //set protected instead of private access for testing
+    protected ParkingType getVehichleType(){
         System.out.println("Please select vehicle type from menu");
         System.out.println("1 CAR");
         System.out.println("2 BIKE");
@@ -118,4 +119,6 @@ public class ParkingService {
             logger.error("Unable to process exiting vehicle",e);
         }
     }
+
+
 }
