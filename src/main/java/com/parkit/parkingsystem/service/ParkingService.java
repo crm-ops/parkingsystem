@@ -80,7 +80,7 @@ public class ParkingService {
     }
 
     //set protected instead of private access for testing
-    protected ParkingType getVehichleType(){
+    public ParkingType getVehichleType(){
         System.out.println("Please select vehicle type from menu");
         System.out.println("1 CAR");
         System.out.println("2 BIKE");

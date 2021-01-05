@@ -6,27 +6,34 @@ import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 
-import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
+
+//import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.internal.stubbing.BaseStubbing;
+import org.mockito.junit.MockitoJUnitRunner;
+
+
+
+
+
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+//import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.*;
-
-@ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.class)
+//@ExtendWith(MockitoExtension.class)
 public class ParkingServiceTest {
 
     private static ParkingService parkingService;
@@ -38,10 +45,10 @@ public class ParkingServiceTest {
     @Mock
     private static TicketDAO ticketDAO;
     @Mock
-    private static DataBaseConfig dbConf;
+    private static ParkingService mockService ;
 
 
-    DataBaseTestConfig dbTest = new DataBaseTestConfig();
+
 
 
 
@@ -57,26 +64,26 @@ public class ParkingServiceTest {
             ticket.setVehicleRegNumber("ABCDEF");
 
 
-       // when(dbConf.getConnection()).thenReturn(dbTest.getConnection());
-        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+            // when(dbConf.getConnection()).thenReturn(dbTest.getConnection());
+            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 
-        when(ticketDAO.getTicket("ABCDEF")).thenReturn(ticket);
-        when(ticketDAO.updateTicket(ticket)).thenReturn(true);
-        when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
+            when(ticketDAO.getTicket("ABCDEF")).thenReturn(ticket);
+            when(ticketDAO.updateTicket(ticket)).thenReturn(true);
+            when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 
-        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-        parkingService.processExitingVehicle();
+            parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+            parkingService.processExitingVehicle();
 
-        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+            verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
 
-         }catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to set up test mock objects in processExitingVehicleTest()");
         }
     }
 
 
-//
+    //
     @Test
     public void processIncomingVehicleTest() {
 
@@ -94,10 +101,37 @@ public class ParkingServiceTest {
 
             verify(ticketDAO, Mockito.times(1)).saveTicket(any(Ticket.class));
 
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to set up test mock objects in processIncomingVehicleTest()");
         }
+    }
+
+
+    @Test(expected=Exception.class)
+    public void processIncomingVehicleExceptionTest() throws Exception {
+
+        try {
+
+                when(ticketDAO.saveTicket(any(Ticket.class))).thenThrow(new Exception("Unable to process incoming vehicle" ));
+
+                parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+                parkingService.processIncomingVehicle();
+
+
+
+
+
+
+        } catch (Exception e) {
+                e.printStackTrace();
+               throw new Exception("Failed to set up test mock objects in processIncomingVehicleTest()");
+            }
+
+
     }
 
 }
