@@ -21,7 +21,9 @@ public class InteractiveShell {
 
     private static final Logger logger = LoggerFactory.getLogger("InteractiveShell");
 
-    public static void loadInterface(){
+    public static void loadInterface() {
+
+      try {
         logger.info("App initialized!!!");
         System.out.println("Welcome to Parking System!");
 
@@ -51,6 +53,11 @@ public class InteractiveShell {
                 default: System.out.println("Unsupported option. Please enter a number corresponding to the provided menu");
             }
         }
+    } catch (Exception e) {
+
+          logger.error(e.toString());
+
+      }
     }
 
     private static void loadMenu(){
