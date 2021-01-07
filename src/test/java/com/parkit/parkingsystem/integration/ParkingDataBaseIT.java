@@ -57,18 +57,19 @@ public class ParkingDataBaseIT {
     }
 
     @Test
-    public void testParkingACar(){
+    public void testParkingACar() throws Exception {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
         //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
         // sebastien VIGE ticket and parking are saved in the Test DB
         Ticket ticket = ticketDAO.getTicket("ABCDEF");
+
         //no assertion
 
     }
 
     @Test
-    public void testParkingLotExit() throws InterruptedException {
+    public void testParkingLotExit() throws InterruptedException, Exception {
         testParkingACar();
         //added wait time 5s to avoid inTime>outTime during test
         Thread.sleep(1000);
