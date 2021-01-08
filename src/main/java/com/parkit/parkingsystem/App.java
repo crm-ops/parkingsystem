@@ -17,6 +17,8 @@ import com.parkit.parkingsystem.service.InteractiveShell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.NoSuchElementException;
+
 public class App {
 
   //replaced log4j logger by sl4j logger - made change in all classes calling log function
@@ -25,7 +27,13 @@ public class App {
 
     public static void main(String args[]){
 
+        try {
         logger.info("Initializing Parking System");
         InteractiveShell.loadInterface();
+        } catch(NoSuchElementException e) {
+        logger.info("Do not press Command-D");
+        logger.info("restarting app");
+            InteractiveShell.loadInterface();
+        }
     }
 }

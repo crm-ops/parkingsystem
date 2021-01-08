@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class InputReaderUtil {
@@ -29,29 +29,28 @@ public class InputReaderUtil {
     private static Scanner scan = new Scanner(System.in);
     private static final Logger logger = LoggerFactory.getLogger("InputReaderUtil");
 
-    public int readSelection() {
+    public int readSelection()  throws NoSuchElementException{
+        int input = 4;
         try {
-            int input = Integer.parseInt(scan.nextLine());
+            input = Integer.parseInt(scan.nextLine());
+
+
+        } catch (NumberFormatException e) {
+            logger.error("You entered an empty string or a non-numeric character, please enter a valid number");
+
             return input;
-        }catch(Exception e){
-            logger.error("Error while reading user input from Shell", e);
-            System.out.println("Error reading input. Please enter valid number for proceeding further");
-            return -1;
         }
+        return input;
     }
 
-    public String readVehicleRegistrationNumber() throws Exception {
-        try {
+    public String readVehicleRegistrationNumber()  {
+
             String vehicleRegNumber= scan.nextLine();
             if(vehicleRegNumber == null || vehicleRegNumber.trim().length()==0) {
-                throw new IllegalArgumentException("Invalid input provided");
+                scan.nextLine();
             }
             return vehicleRegNumber;
-        }catch(Exception e){
-            logger.error("Error while reading user input from Shell", e);
-            System.out.println("Error reading input. Please enter a valid string for vehicle registration number");
-            throw e;
-        }
+
     }
 
 

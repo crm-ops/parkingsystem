@@ -17,47 +17,63 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
+import java.util.NoSuchElementException;
+
 public class InteractiveShell {
 
     private static final Logger logger = LoggerFactory.getLogger("InteractiveShell");
 
     public static void loadInterface() {
+        try {
+            logger.info("App initialized!!!");
+            System.out.println("Welcome to Parking System!");
 
-      try {
-        logger.info("App initialized!!!");
-        System.out.println("Welcome to Parking System!");
+            boolean continueApp = true;
+            InputReaderUtil inputReaderUtil = new InputReaderUtil();
+            ParkingSpotDAO parkingSpotDAO = new ParkingSpotDAO();
+            TicketDAO ticketDAO = new TicketDAO();
+            ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 
-        boolean continueApp = true;
-        InputReaderUtil inputReaderUtil = new InputReaderUtil();
-        ParkingSpotDAO parkingSpotDAO = new ParkingSpotDAO();
-        TicketDAO ticketDAO = new TicketDAO();
-        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+            while (continueApp) {
+                loadMenu();
+                int option = inputReaderUtil.readSelection();
+                switch (option) {
+                    case 1: {
+                        logger.debug("option 1 selected - processing incoming vehicule");
+                        parkingService.processIncomingVehicle();
+                        break;
+                    }
+                    case 2: {
 
-        while(continueApp){
-            loadMenu();
-            int option = inputReaderUtil.readSelection();
-            switch(option){
-                case 1: {
-                    parkingService.processIncomingVehicle();
-                    break;
+                        logger.debug("option 1 selected - processing incoming vehicule");
+                        parkingService.processExitingVehicle();
+                        break;
+                    }
+                    case 3: {
+                        System.out.println("Exiting from the system!");
+                        continueApp = false;
+                        break;
+                    }
+                    default:
+                        System.out.println("Unsupported option. Please enter a number corresponding to the provided menu");
                 }
-                case 2: {
-                    parkingService.processExitingVehicle();
-                    break;
-                }
-                case 3: {
-                    System.out.println("Exiting from the system!");
-                    continueApp = false;
-                    break;
-                }
-                default: System.out.println("Unsupported option. Please enter a number corresponding to the provided menu");
             }
+
+        } catch (NumberFormatException e) {
+            logger.info("Please input numbers corresponding to menu option in all menus");
+            logger.info("Reloading interface");
+            loadInterface();
+        } catch (NullPointerException e) {
+            logger.info("You entered an empty plate #");
+            logger.info("Please renew your demand");
+            loadInterface();
+
+        }catch(NoSuchElementException  e) {
+            logger.error("You pressed keys CTRL-D or COMMAND-D");
+            logger.error("This kills the console text scanner");
+            logger.error("Exiting");
+            logger.error("Please restart the app");
         }
-    } catch (Exception e) {
-
-          logger.error(e.toString());
-
-      }
     }
 
     private static void loadMenu(){
