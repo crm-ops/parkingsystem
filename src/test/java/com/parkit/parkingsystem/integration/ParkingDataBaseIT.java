@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -62,9 +63,14 @@ public class ParkingDataBaseIT {
         parkingService.processIncomingVehicle();
         //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
         // sebastien VIGE ticket and parking are saved in the Test DB
+        Thread.sleep(500);
         Ticket ticket = ticketDAO.getTicket("ABCDEF");
 
-        //no assertion
+        assertEquals("ABCDEF", ticket.getVehicleRegNumber());
+        assertEquals(true, ticket.getActive());
+        assertNotNull( ticket.getParkingSpot());
+        assertEquals(0.0,ticket.getPrice());
+
 
     }
 
@@ -76,7 +82,7 @@ public class ParkingDataBaseIT {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         //parkingService.processExitingVehicle();
 
-        //TODO: check that the fare generated and out time are populated correctly in the database
+        //TO CONTINUE 12/01 TODO: check that the fare generated and out time are populated correctly in the database
         // no assertion
     }
 

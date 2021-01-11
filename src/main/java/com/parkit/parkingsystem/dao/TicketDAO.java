@@ -40,6 +40,8 @@ public class TicketDAO {
             ps.setDouble(3, ticket.getPrice());
             ps.setTimestamp(4, new Timestamp(ticket.getInTime().getTime()));
             ps.setTimestamp(5, (ticket.getOutTime() == null)?null: (new Timestamp(ticket.getOutTime().getTime())) );
+            int val = (ticket.getActive()) ? 1 : 0;
+            ps.setInt(6,val);
             return ps.execute();
         }catch (Exception ex){
             logger.error("Error fetching next available slot",ex);
@@ -57,6 +59,7 @@ public class TicketDAO {
             PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET);
             //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
             ps.setString(1,vehicleRegNumber);
+
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 ticket = new Ticket();
@@ -67,6 +70,9 @@ public class TicketDAO {
                 ticket.setPrice(rs.getDouble(3));
                 ticket.setInTime(rs.getTimestamp(4));
                 ticket.setOutTime(rs.getTimestamp(5));
+                Boolean val = convertIntBoolean(rs.getInt(7));
+                ticket.setActive(val);
+
             }
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
@@ -85,7 +91,9 @@ public class TicketDAO {
             PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
             ps.setDouble(1, ticket.getPrice());
             ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));
-            ps.setInt(3,ticket.getId());
+            int val = (ticket.getActive()) ? 1 : 0;
+            ps.setInt(3, val);
+            ps.setInt(4,ticket.getId());
             ps.execute();
             return true;
         }catch (Exception ex){
@@ -95,4 +103,48 @@ public class TicketDAO {
         }
         return false;
     }
+
+    public Boolean getHasPastTicket(String vehicleRegNumber) {
+        Connection con = null;
+        Boolean result = null;
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstants.PAST_TICKET);
+            //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
+            ps.setString(1,vehicleRegNumber);
+            ResultSet rs = ps.executeQuery();
+            int nbExistingPasTickets;
+            if(rs.next()){
+                nbExistingPasTickets=rs.getInt(1);
+                if (nbExistingPasTickets>0){
+
+                    result = true;
+                }else {
+                    result = false;
+                }
+
+            }
+            dataBaseConfig.closeResultSet(rs);
+            dataBaseConfig.closePreparedStatement(ps);
+        }catch (Exception ex){
+            logger.error("Error fetching next available slot",ex);
+        }finally {
+            dataBaseConfig.closeConnection(con);
+            return result;
+        }
+    }
+
+    public Boolean convertIntBoolean(int input) {
+        Boolean result = null;
+
+        if (input >= 1) {
+            result = true;
+        }
+        else {
+            result = false;
+        }
+
+        return result;
+    }
+
 }

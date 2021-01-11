@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.function.BooleanSupplier;
 
 public class ParkingService {
 
@@ -31,9 +32,12 @@ public class ParkingService {
 
     public void processIncomingVehicle() throws NumberFormatException {
 
+
+
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
             if(parkingSpot !=null && parkingSpot.getId() > 0) {
                 String vehicleRegNumber = getVehichleRegNumber();
+
                 parkingSpot.setAvailable(false);
                 parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false
 
@@ -43,6 +47,7 @@ public class ParkingService {
                 //ticket.setId(ticketID);
                 ticket.setParkingSpot(parkingSpot);
                 ticket.setVehicleRegNumber(vehicleRegNumber);
+                ticket.setActive(true);
                 ticket.setPrice(0);
                 ticket.setInTime(inTime);
                 ticket.setOutTime(null);
@@ -105,9 +110,12 @@ public class ParkingService {
     public void processExitingVehicle()  throws NullPointerException {
 
                 String vehicleRegNumber = getVehichleRegNumber();
+                Boolean returningVehicule = ticketDAO.getHasPastTicket(vehicleRegNumber);
                 Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
                 Date outTime = new Date();
                 ticket.setOutTime(outTime);
+                ticket.setReturningVehicule(returningVehicule);
+                ticket.setActive(false);
                 fareCalculatorService.calculateFare(ticket);
                 if (ticketDAO.updateTicket(ticket)) {
                     ParkingSpot parkingSpot = ticket.getParkingSpot();
