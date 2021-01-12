@@ -33,8 +33,6 @@ public class InputReaderUtil {
         int input = 4;
         try {
             input = Integer.parseInt(scan.nextLine());
-
-
         } catch (NumberFormatException e) {
             logger.error("You entered an empty string or a non-numeric character, please enter a valid number");
 

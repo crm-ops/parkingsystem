@@ -11,6 +11,9 @@
 
 package com.parkit.parkingsystem.service;
 
+
+import com.parkit.parkingsystem.customExceptions.ParkingExitWithoutValidTicketException;
+import com.parkit.parkingsystem.customExceptions.SecondParkingEnteringAttemptWithSamePlate;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.util.InputReaderUtil;
@@ -67,13 +70,19 @@ public class InteractiveShell {
             logger.info("You entered an empty plate #");
             logger.info("Please renew your demand");
             loadInterface();
-
         }catch(NoSuchElementException  e) {
             logger.error("You pressed keys CTRL-D or COMMAND-D");
             logger.error("This kills the console text scanner");
             logger.error("Exiting");
             logger.error("Please restart the app");
+        }catch(ParkingExitWithoutValidTicketException e){
+            logger.info("You attempt to exit the parking with no valid active ticket - Please contact parking office urgently");
+            loadInterface();
+        }catch(SecondParkingEnteringAttemptWithSamePlate e){
+            logger.info("A vehicule with your plate already holds an active ticket - FRAUD IN PROGRESS - Please contact parking office urgently");
+            loadInterface();
         }
+
     }
 
     private static void loadMenu(){

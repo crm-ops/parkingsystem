@@ -1,4 +1,6 @@
 import com.parkit.parkingsystem.constants.ParkingType;
+import com.parkit.parkingsystem.customExceptions.ParkingExitWithoutValidTicketException;
+import com.parkit.parkingsystem.customExceptions.SecondParkingEnteringAttemptWithSamePlate;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.ParkingSpot;
@@ -42,9 +44,11 @@ public class ParkingServiceTest {
             ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
             ticket.setParkingSpot(parkingSpot);
             ticket.setVehicleRegNumber("ABCDEF");
+            ticket.setActive(true);
 
             when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
             when(ticketDAO.getTicket("ABCDEF")).thenReturn(ticket);
+            when(ticketDAO.getActiveTicketCount("ABCDEF")).thenReturn(1);
             when(ticketDAO.updateTicket(ticket)).thenReturn(true);
             when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
             //ACT
@@ -155,7 +159,28 @@ public class ParkingServiceTest {
             //ACT
             ParkingService svc = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
             //ASSERT
-            assertThrows(NullPointerException.class, ()->svc.processExitingVehicle()) ;
+            assertThrows(ParkingExitWithoutValidTicketException.class, ()->svc.processExitingVehicle()) ;
+
+
+    }
+
+
+    @Test
+    public void processIncomingVehiculeTestWithExistingActiveTicketThrowException()  {
+
+
+        //ARRANGE
+        when(inputReaderUtil.readSelection()).thenReturn(2);
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+        when(parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE)).thenReturn(1);
+        when(ticketDAO.getActiveTicketCount("ABCDEF")).thenReturn(1);
+
+        //ACT
+        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+
+
+        //ASSERT
+        assertThrows(SecondParkingEnteringAttemptWithSamePlate.class,()->parkingService.processIncomingVehicle());
 
 
     }

@@ -1,5 +1,7 @@
 package com.parkit.parkingsystem.service;
 
+import com.parkit.parkingsystem.customExceptions.ParkingExitWithoutValidTicketException;
+import com.parkit.parkingsystem.customExceptions.SecondParkingEnteringAttemptWithSamePlate;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
@@ -30,13 +32,19 @@ public class ParkingService {
         this.ticketDAO = ticketDAO;
     }
 
-    public void processIncomingVehicle() throws NumberFormatException {
-
+    public void processIncomingVehicle() throws NumberFormatException , IllegalArgumentException {
 
 
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
             if(parkingSpot !=null && parkingSpot.getId() > 0) {
                 String vehicleRegNumber = getVehichleRegNumber();
+                //test if incoming plate has already a valid ticket
+                //retrieve last ticket for plate
+                int activeTicketCount = ticketDAO.getActiveTicketCount(vehicleRegNumber);
+                if (activeTicketCount >0) {
+                    logger.info("Your vehicule is already parked - please park another vehicule");
+                    throw new SecondParkingEnteringAttemptWithSamePlate("FRAUD ATTEMPT - DETECTED");
+                }
 
                 parkingSpot.setAvailable(false);
                 parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false
@@ -107,9 +115,16 @@ public class ParkingService {
         }
     }
 
-    public void processExitingVehicle()  throws NullPointerException {
+    public void processExitingVehicle()  throws IllegalArgumentException, NullPointerException {
 
                 String vehicleRegNumber = getVehichleRegNumber();
+                //is there an active ticket for the provided plate ?
+                int activeTicket = ticketDAO.getActiveTicketCount(vehicleRegNumber);
+                if (activeTicket>0) {
+                    logger.info("You have a valid ticket - calculating fare ...");
+                } else {
+                    throw new ParkingExitWithoutValidTicketException("No valid active parking ticket");
+                }
                 Boolean returningVehicule = ticketDAO.getHasPastTicket(vehicleRegNumber);
                 Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
                 Date outTime = new Date();
