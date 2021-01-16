@@ -12,11 +12,6 @@
 
 package com.parkit.parkingsystem.util;
 
-// svige replace Log4j support by sl4j
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
-
-import org.apache.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

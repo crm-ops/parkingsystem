@@ -48,7 +48,6 @@ public class ParkingDataBaseIT {
 
     @BeforeEach
     private void setUpPerTest() throws Exception {
-      //  when(inputReaderUtil.readSelection()).thenReturn(1);
 
 
     }
@@ -66,8 +65,6 @@ public class ParkingDataBaseIT {
         when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
-        //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
-        // sebastien VIGE ticket and parking are saved in the Test DB
         Thread.sleep(500);
         Ticket ticket = ticketDAO.getTicket("ABCDEF");
 
@@ -83,7 +80,6 @@ public class ParkingDataBaseIT {
     public void testParkingLotExit() throws InterruptedException {
         when(inputReaderUtil.readSelection()).thenReturn(2);
         when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-        //testParkingACar();
         //process incoming car instead of executing testPrkingACar()
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
@@ -234,20 +230,5 @@ public class ParkingDataBaseIT {
 
     }
 
-
-
-    // test 30 mins free parking for new client
-            //covered in unit test
-    // test 5% discount for returning client
-            //covered in unit test
-
-    //==> integration test
-
-    //1 - test reports
-    // testing parking service only - not to worry if coverage is not 100%
-
-    //code coverage in intelliJ
-
-    // done - joda time to impletment in th full class + test + ticket + factorise (at the end)
 
 }
