@@ -10,6 +10,8 @@ public class Ticket {
     private double price;
     private Date inTime;
     private Date outTime;
+    private Boolean active;
+    private Boolean returningVehicule;
 
     public int getId() {
         return id;
@@ -57,5 +59,21 @@ public class Ticket {
 
     public void setOutTime(Date outTime) {
         this.outTime = outTime;
+    }
+
+    public Boolean getReturningVehicule() {
+        return returningVehicule;
+    }
+
+    public void setReturningVehicule(Boolean returningVehicule) {
+        this.returningVehicule = returningVehicule;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

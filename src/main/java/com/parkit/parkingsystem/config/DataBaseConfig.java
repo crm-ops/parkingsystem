@@ -1,13 +1,23 @@
+/*
+  Mov'it Group - Park'it app  OCR Project 5 initiative
+
+  Start the Interactive Shell with 3 option, parking entry, exit with ticket or shutdown
+
+  @previous_author undocumented
+ * @author  Sébastien Vigé
+ * @version 1.0
+ * @since   2020-12-28
+ */
+
 package com.parkit.parkingsystem.config;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.sql.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DataBaseConfig {
 
-    private static final Logger logger = LogManager.getLogger("DataBaseConfig");
+    private static final Logger logger = LoggerFactory.getLogger("DataBaseConfig");
 
     public Connection getConnection() throws ClassNotFoundException, SQLException {
         logger.info("Create DB connection");
